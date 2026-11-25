@@ -1,0 +1,5 @@
+# Copy this file to "db.properties" (same folder) and write your own PostgreSQL password.
+# db.properties is in .gitignore, so your password is never uploaded to GitHub.
+db.url=jdbc:postgresql://localhost:5432/researchmate
+db.user=postgres
+db.password=your_password_here
