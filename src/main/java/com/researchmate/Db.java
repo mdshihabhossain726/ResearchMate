@@ -29,7 +29,6 @@ public class Db {
             + " year    INTEGER       NOT NULL CHECK (year BETWEEN 1900 AND 2100),"
             + " content TEXT,"
             + " UNIQUE (title, year))";   // the same title + year twice is rejected (no duplicates)
-
     /** Reads db.properties if it exists in the folder where the program is started. */
     public static void loadSettings() {
         File file = new File("db.properties");
