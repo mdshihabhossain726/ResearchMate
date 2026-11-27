@@ -1,3 +1,26 @@
+# Build output
 target/
-db.properties
 *.class
+*.jar
+
+# Secrets and local settings - NEVER commit these
+db.properties
+*.env
+.env
+
+# Files the app creates while you test it
+papers*.csv
+*.log
+
+# IDE / editor
+.vscode/
+.idea/
+*.iml
+.classpath
+.project
+.settings/
+
+# Operating system
+.DS_Store
+Thumbs.db
+desktop.ini
