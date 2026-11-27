@@ -1,9 +1,14 @@
 package com.researchmate;
 
+import javax.swing.JButton;
 import javax.swing.JOptionPane;
+import java.awt.Color;
 import java.awt.Component;
+import java.awt.Container;
+import java.awt.Cursor;
 import java.sql.SQLException;
 import java.time.Year;
+import java.util.Set;
 
 /** Small helpers shared by all screens: message boxes, input checks and CSV text. */
 public class Ui {
@@ -66,5 +71,27 @@ public class Ui {
             return "\"" + value.replace("\"", "\"\"") + "\"";
         }
         return value;
+    }
+
+    private static final Set<String> MAIN_BUTTONS = Set.of("Add", "Search", "Compare", "Analyze", "Save paper");
+
+    /** Only looks: gives every button a hand cursor, main buttons blue and "Delete" red. */
+    public static void polish(Container root) {
+        for (Component c : root.getComponents()) {
+            if (c instanceof JButton b) {
+                b.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+                b.setFocusPainted(false);
+                if ("Delete".equals(b.getText())) {
+                    b.setBackground(new Color(0xDC2626));
+                    b.setForeground(Color.WHITE);
+                } else if (MAIN_BUTTONS.contains(b.getText())) {
+                    b.setBackground(new Color(0x2563EB));
+                    b.setForeground(Color.WHITE);
+                }
+            }
+            if (c instanceof Container inner) {
+                polish(inner);
+            }
+        }
     }
 }
