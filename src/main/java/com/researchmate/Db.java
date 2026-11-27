@@ -13,7 +13,7 @@ import java.util.Properties;
  * Everything about the PostgreSQL connection:
  *  - reads the settings from db.properties (the password is NOT written in the code),
  *  - opens connections,
- *  - creates the database and the table on the first start.
+ *  - creates the database and the tables on the first start.
  */
 public class Db {
 
@@ -21,14 +21,21 @@ public class Db {
     private static String user = "postgres";
     private static String password = "";
 
-    private static final String CREATE_TABLE =
+    private static final String CREATE_USERS =
+            "CREATE TABLE IF NOT EXISTS users ("
+            + " id            SERIAL PRIMARY KEY,"
+            + " username      VARCHAR(30)  NOT NULL UNIQUE,"
+            + " full_name     VARCHAR(100) NOT NULL,"
+            + " password_hash VARCHAR(200) NOT NULL)";   // only the salted hash, never the password
+
+    private static final String CREATE_PAPERS =
             "CREATE TABLE IF NOT EXISTS papers ("
             + " id      SERIAL PRIMARY KEY,"
             + " title   VARCHAR(500)  NOT NULL,"
             + " authors VARCHAR(1000) NOT NULL,"
             + " year    INTEGER       NOT NULL CHECK (year BETWEEN 1900 AND 2100),"
-            + " content TEXT,"
-            + " UNIQUE (title, year))";   // the same title + year twice is rejected (no duplicates)
+            + " content TEXT)";
+
     /** Reads db.properties if it exists in the folder where the program is started. */
     public static void loadSettings() {
         File file = new File("db.properties");
@@ -51,7 +58,7 @@ public class Db {
         return DriverManager.getConnection(url, user, password);
     }
 
-    /** Creates the table (and the database, if it does not exist yet). */
+    /** Creates the tables (and the database, if it does not exist yet). */
     public static void setup() throws SQLException {
         try (Connection c = connect()) {
             createTable(c);
@@ -68,7 +75,13 @@ public class Db {
 
     private static void createTable(Connection c) throws SQLException {
         try (Statement st = c.createStatement()) {
-            st.executeUpdate(CREATE_TABLE);
+            st.executeUpdate(CREATE_USERS);
+            st.executeUpdate(CREATE_PAPERS);
+            // Every paper belongs to one user. These lines also upgrade an older database without accounts.
+            st.executeUpdate("ALTER TABLE papers ADD COLUMN IF NOT EXISTS user_id INTEGER REFERENCES users(id) ON DELETE CASCADE");
+            st.executeUpdate("ALTER TABLE papers DROP CONSTRAINT IF EXISTS papers_title_year_key");
+            // the same title + year twice is rejected, but only inside one account
+            st.executeUpdate("CREATE UNIQUE INDEX IF NOT EXISTS papers_user_title_year ON papers (user_id, title, year)");
         }
     }
 
