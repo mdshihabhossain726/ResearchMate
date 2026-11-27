@@ -6,7 +6,7 @@ import java.awt.Font;
 import java.awt.Insets;
 import java.sql.SQLException;
 
-/** Start of the program: connect to PostgreSQL, create the table, open the window. */
+/** Start of the program: connect to PostgreSQL, create the tables, open the login window. */
 public class Main {
 
     public static void main(String[] args) {
@@ -19,7 +19,7 @@ public class Main {
                     + "\n\nCheck that PostgreSQL is running and that db.properties has the right password.");
             return;
         }
-        SwingUtilities.invokeLater(() -> new MainFrame().setVisible(true));
+        SwingUtilities.invokeLater(() -> new LoginFrame().setVisible(true));
     }
 
     /** Modern flat look (FlatLaf); if it is not available, the system look is used. Only looks, no logic. */
@@ -45,5 +45,13 @@ public class Main {
         UIManager.put("TabbedPane.font", new Font(Font.SANS_SERIF, Font.BOLD, 15));
         UIManager.put("TabbedPane.tabInsets", new Insets(8, 18, 8, 18));
         UIManager.put("TextArea.margin", new Insets(8, 10, 8, 10));
+        UIManager.put("TableHeader.background", new java.awt.Color(0xEEF2FF));
+        UIManager.put("Table.selectionBackground", new java.awt.Color(0xDBEAFE));
+        UIManager.put("Table.selectionForeground", new java.awt.Color(0x1E3A8A));
+        UIManager.put("TabbedPane.tabType", "underlined");
+        UIManager.put("TabbedPane.underlineColor", new java.awt.Color(0x2563EB));
+        UIManager.put("TabbedPane.selectedForeground", new java.awt.Color(0x2563EB));
+        UIManager.put("TabbedPane.showTabSeparators", false);
+        UIManager.put("ProgressBar.arc", 999);
     }
 }
